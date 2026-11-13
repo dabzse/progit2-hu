@@ -1,8 +1,8 @@
-name: Release on push to main
+name: Release on push
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master, main ]
 
 jobs:
   release:
@@ -25,7 +25,10 @@ jobs:
       id: compute-tag
       run: |
         echo Computing next tag number
-        LASTPATCH=$(git describe --tags | cut -d- -f1 | cut -d. -f3)
+        LASTPATCH=$(git describe --tags 2>/dev/null | cut -d- -f1 | cut -d. -f3)
+        if [ -z "$LASTPATCH" ]; then
+          LASTPATCH=0
+        fi
         PATCH=$(($LASTPATCH+1))
         echo "tagname=2.1.${PATCH}" >> $GITHUB_OUTPUT
 
@@ -34,5 +37,5 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         tag: ${{ steps.compute-tag.outputs.tagname }}
-        commit: main
+        commit: ${{ github.sha }}
         artifacts: './progit.epub,./progit.fb2.zip,./progit.mobi,./progit.pdf,./progit.html'

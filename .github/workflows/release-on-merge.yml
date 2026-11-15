@@ -39,5 +39,7 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         tag: ${{ steps.compute-tag.outputs.tagname }}
+        name: "Version ${{ steps.compute-tag.outputs.tagname }}"
+        generateReleaseNotes: true
         commit: ${{ github.sha }}
         artifacts: './progit.epub,./progit.fb2.zip,./progit.mobi,./progit.pdf,./progit.html'

@@ -3,7 +3,7 @@ namespace :book do
   # Az összeállításhoz szükséges változók
   version_string = `git describe --tags --abbrev=0 2>/dev/null`.chomp
   if version_string.empty?
-    version_string = '2.1.449'
+    version_string = '2.1.450'
   else
     versions = version_string.split('.')
     version_string = versions[0] + '.' + versions[1] + '.' + versions[2].to_i.next.to_s
@@ -113,6 +113,24 @@ namespace :book do
 
       sh "htmlproofer progit.html"
       sh "epubcheck progit.epub"
+  end
+
+  desc 'Árva betűk javítása (nemzetközi / generic)'
+  task :fix_orphan_a do
+    puts 'Árva betűk javítása...'
+    sh "ruby fix_orphan_a.rb --write"
+  end
+
+  desc 'Magyar tipográfiai és helyesírási szabályok javítása'
+  task :fix_hu_typography do
+    puts 'Magyar tipográfiai és helyesírási szabályok javítása...'
+    sh "ruby fix_hu_typographical_rules.rb --write"
+  end
+
+  desc 'Tipográfiai ellenőrzés (CI / ellenőrzés módosítás nélkül)'
+  task :check_typography do
+    puts 'Tipográfiai ellenőrzés futtatása...'
+    sh "ruby fix_hu_typographical_rules.rb --check"
   end
 
   desc 'Az összes generált fájl törlése'
